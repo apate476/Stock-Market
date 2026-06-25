@@ -25,7 +25,8 @@ def analyze_sentiment(article: dict) -> dict:
             messages=[{"role": "user", "content": prompt}]
         )
         
-        result = json.loads(message.content[0].text)
+        text = str(message.content[0].text)
+        result = json.loads(text)
         logger.info(f"Sentiment analyzed: {result.get('sentiment')} with confidence {result.get('confidence')}")
         return result
     
