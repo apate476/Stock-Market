@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch, MagicMock
 from src.sentiment_analyzer.database.store_sentiment_result import store_sentiment_result
 
@@ -9,7 +8,7 @@ def test_store_sentiment_result_returns_true_on_success():
         mock_client.return_value.table.return_value.insert.return_value.execute.return_value = MagicMock()
         result = store_sentiment_result("AAPL", {"sentiment": "bullish", "confidence": 85, "summary": "Apple hits record high."})
     
-    assert result == True
+    assert result
 
 
 
@@ -19,7 +18,7 @@ def test_store_sentiment_result_returns_false_on_exception():
         mock_client.return_value.table.return_value.insert.return_value.execute.side_effect = Exception("DB error")
         result = store_sentiment_result("AAPL", {"sentiment": "bullish", "confidence": 85, "summary": "Apple hits record high."})
     
-    assert result == False
+    assert not result
 
 
 

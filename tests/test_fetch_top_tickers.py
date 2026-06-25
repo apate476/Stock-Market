@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch, MagicMock
 from src.sentiment_analyzer.news.fetch_top_tickers import fetch_top_tickers
 
