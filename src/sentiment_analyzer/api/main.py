@@ -5,14 +5,18 @@ from src.sentiment_analyzer.utils.logger import logger
 from src.sentiment_analyzer.utils.config import SUPABASE_URL, SUPABASE_SERVICE_KEY
 
 app = FastAPI()
-supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+
+def get_supabase():
+    """Create and return a Supabase client."""
+    return create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 
 @app.get("/sentiments")
 def get_all_sentiments() -> list:
     """Return all sentiment results from Supabase."""
     try:
-        response = supabase.table("sentiment_results").select("*").execute()
+        response = get_supabase().table("sentiment_results").select("*").execute()
         logger.info("Fetched all sentiment results")
         return response.data
     except Exception as e:
@@ -24,7 +28,7 @@ def get_all_sentiments() -> list:
 def get_sentiment_by_ticker(ticker: str) -> list:
     """Return sentiment results for a specific stock ticker."""
     try:
-        response = supabase.table("sentiment_results").select("*").eq("ticker", ticker).execute()
+        response = get_supabase().table("sentiment_results").select("*").eq("ticker", ticker).execute()
         logger.info(f"Fetched sentiment results for {ticker}")
         return response.data
     except Exception as e:
@@ -38,7 +42,7 @@ def get_sentiment_history(ticker: str) -> list:
     try:
         since = (datetime.utcnow() - timedelta(days=30)).isoformat()
         response = (
-            supabase.table("sentiment_results")
+            get_supabase().table("sentiment_results")
             .select("*")
             .eq("ticker", ticker)
             .gte("created_at", since)
@@ -55,13 +59,13 @@ def get_sentiment_history(ticker: str) -> list:
 @app.websocket("/ws/sentiments")
 async def websocket_sentiment_feed(websocket: WebSocket) -> None:
     """WebSocket endpoint that streams the latest sentiment results to connected clients."""
+    import asyncio
     await websocket.accept()
     logger.info("WebSocket client connected")
     try:
         while True:
-            response = supabase.table("sentiment_results").select("*").order("created_at", desc=True).limit(50).execute()
+            response = get_supabase().table("sentiment_results").select("*").order("created_at", desc=True).limit(50).execute()
             await websocket.send_json(response.data)
-            import asyncio
             await asyncio.sleep(30)
     except WebSocketDisconnect:
         logger.info("WebSocket client disconnected")
