@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch, MagicMock
 from src.sentiment_analyzer.sentiment.analyze_sentiment import analyze_sentiment
 
@@ -7,7 +6,7 @@ from src.sentiment_analyzer.sentiment.analyze_sentiment import analyze_sentiment
 def test_analyze_sentiment_returns_result():
     """Test that sentiment result is returned when Claude responds successfully."""
     mock_message = MagicMock()
-    mock_message.content[0].text = '{"sentiment": "bullish", "confidence": 85, "summary": "Apple reports record profits."}'
+    mock_message.content[0].text = '{"sentiment": "bullish", "confidence": 85, "summary": "Apple reports record profits.", "recommendation": "buy"}'
     
     with patch("src.sentiment_analyzer.sentiment.analyze_sentiment.anthropic.Anthropic") as mock_client:
         mock_client.return_value.messages.create.return_value = mock_message

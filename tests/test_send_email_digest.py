@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch, MagicMock
 from src.sentiment_analyzer.email.send_email_digest import send_email_digest
 import base64
@@ -13,7 +12,7 @@ def test_send_email_digest_returns_true_on_success():
         mock_smtp.return_value.__enter__.return_value = MagicMock()
         result = send_email_digest(results, "test@example.com")
     
-    assert result == True
+    assert result
 
 
 
@@ -25,7 +24,7 @@ def test_send_email_digest_returns_false_on_exception():
         mock_smtp.side_effect = Exception("SMTP error")
         result = send_email_digest(results, "test@example.com")
     
-    assert result == False
+    assert not result
 
 
 

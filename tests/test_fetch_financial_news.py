@@ -1,5 +1,4 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from src.sentiment_analyzer.news.fetch_financial_news import fetch_financial_news
 
 

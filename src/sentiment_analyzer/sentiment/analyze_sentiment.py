@@ -12,6 +12,7 @@ def analyze_sentiment(article: dict) -> dict:
         - sentiment: either "bullish", "bearish", or "neutral"
         - confidence: a number between 0 and 100
         - summary: a 1-2 sentence summary of the article
+        - recommendation: either "buy", "hold", or "watch"
 
         Article title: {article.get('title', '')}
         Article content: {article.get('content', '')}
@@ -24,10 +25,11 @@ def analyze_sentiment(article: dict) -> dict:
             messages=[{"role": "user", "content": prompt}]
         )
         
-        result = json.loads(message.content[0].text)
+        text = str(message.content[0].text)
+        result = json.loads(text)
         logger.info(f"Sentiment analyzed: {result.get('sentiment')} with confidence {result.get('confidence')}")
         return result
     
     except Exception as e:
         logger.error(f"Failed to analyze sentiment: {e}")
-        return {"sentiment": "neutral", "confidence": 0, "summary": ""}
+        return {"sentiment": "neutral", "confidence": 0, "summary": "", "recommendation": "watch"}
